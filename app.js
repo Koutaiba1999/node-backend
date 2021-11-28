@@ -123,6 +123,9 @@ app.get("/getstock", auth, async(req, res) => {
 app.post('/transfertBlood', auth, async(req, res) => {
     try {
         var { ville1, ville2, categorie, souscategorie, quantity } = req.body
+        if (!(ville1, ville2, categorie, souscategorie, quantity)) {
+            res.status(400).send("All input is required");
+        }
         const stock1 = await BloodStock.findOne({ ville: ville1 })
         const stock2 = await BloodStock.findOne({ ville: ville2 })
         console.log('stock 1', stock1)
