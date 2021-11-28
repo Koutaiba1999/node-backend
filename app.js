@@ -12,6 +12,9 @@ app.use(express.json());
 const User = require("./model/user");
 const BloodStock = require("./model/BloodStock");
 
+app.get("/", (req, res) => {
+    res.status(200).send("Hello server is running").end();
+});
 // Register
 app.post("/register", async(req, res) => {
     // Our register logic starts here
@@ -104,8 +107,8 @@ app.post("/save", auth, async(req, res) => {
         const bloodStock = await BloodStock.create({
             ville: ville,
             centre: centre,
-            bloodstock: bloodstock
-        })
+            bloodstock: bloodstock,
+        });
         res.status(201).json(bloodStock);
     } catch (err) {
         console.log(err);
@@ -116,42 +119,44 @@ app.get("/getstock", auth, async(req, res) => {
         const stock = await BloodStock.find();
         res.status(201).json(stock);
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
-
-})
-app.post('/transfertBlood', auth, async(req, res) => {
+});
+app.post("/transfertBlood", auth, async(req, res) => {
     try {
-        var { ville1, ville2, categorie, souscategorie, quantity } = req.body
+        var { ville1, ville2, categorie, souscategorie, quantity } = req.body;
         if (!(ville1, ville2, categorie, souscategorie, quantity)) {
             res.status(400).send("All input is required");
         }
-        const stock1 = await BloodStock.findOne({ ville: ville1 })
-        const stock2 = await BloodStock.findOne({ ville: ville2 })
-        console.log('stock 1', stock1)
-        console.log('stock 2', stock2)
+        const stock1 = await BloodStock.findOne({ ville: ville1 });
+        const stock2 = await BloodStock.findOne({ ville: ville2 });
+        console.log("stock 1", stock1);
+        console.log("stock 2", stock2);
         var t = [];
-        var t2 = []
+        var t2 = [];
         for (let i = 0; i < stock1.bloodstock.length; i++) {
             if (stock1.bloodstock[i].categorie == categorie) {
                 if (souscategorie == "Plus") {
                     if (quantity < stock1.bloodstock[i].souscategorieplus) {
-                        stock1.bloodstock[i].souscategorieplus = stock1.bloodstock[i].souscategorieplus - quantity
-                        t.push(stock1.bloodstock[i])
+                        stock1.bloodstock[i].souscategorieplus =
+                            stock1.bloodstock[i].souscategorieplus - quantity;
+                        t.push(stock1.bloodstock[i]);
                     } else {
-                        quantity = stock1.bloodstock[i].souscategorieplus
-                        stock1.bloodstock[i].souscategorieplus = stock1.bloodstock[i].souscategorieplus - quantity
-                        t.push(stock1.bloodstock[i])
+                        quantity = stock1.bloodstock[i].souscategorieplus;
+                        stock1.bloodstock[i].souscategorieplus =
+                            stock1.bloodstock[i].souscategorieplus - quantity;
+                        t.push(stock1.bloodstock[i]);
                     }
-
                 } else {
                     if (quantity < stock1.bloodstock[i].souscategoriemoins) {
-                        stock1.bloodstock[i].souscategoriemoins = stock1.bloodstock[i].souscategoriemoins - quantity
-                        t.push(stock1.bloodstock[i])
+                        stock1.bloodstock[i].souscategoriemoins =
+                            stock1.bloodstock[i].souscategoriemoins - quantity;
+                        t.push(stock1.bloodstock[i]);
                     } else {
-                        quantity = stock1.bloodstock[i].souscategoriemoins
-                        stock1.bloodstock[i].souscategoriemoins = stock1.bloodstock[i].souscategoriemoins - quantity
-                        t.push(stock1.bloodstock[i])
+                        quantity = stock1.bloodstock[i].souscategoriemoins;
+                        stock1.bloodstock[i].souscategoriemoins =
+                            stock1.bloodstock[i].souscategoriemoins - quantity;
+                        t.push(stock1.bloodstock[i]);
                     }
                 }
             } else {
@@ -161,33 +166,32 @@ app.post('/transfertBlood', auth, async(req, res) => {
         for (let i = 0; i < stock2.bloodstock.length; i++) {
             if (stock2.bloodstock[i].categorie == categorie) {
                 if (souscategorie == "Plus") {
-
-                    stock2.bloodstock[i].souscategorieplus = stock2.bloodstock[i].souscategorieplus + quantity
-                    t2.push(stock2.bloodstock[i])
-
-
+                    stock2.bloodstock[i].souscategorieplus =
+                        stock2.bloodstock[i].souscategorieplus + quantity;
+                    t2.push(stock2.bloodstock[i]);
                 } else {
-                    stock2.bloodstock[i].souscategoriemoins = stock2.bloodstock[i].souscategoriemoins + quantity
-                    t2.push(stock2.bloodstock[i])
+                    stock2.bloodstock[i].souscategoriemoins =
+                        stock2.bloodstock[i].souscategoriemoins + quantity;
+                    t2.push(stock2.bloodstock[i]);
                 }
             } else {
                 t2.push(stock2.bloodstock[i]);
             }
         }
-        console.log('t', t);
-        console.log('t2', t2);
+        console.log("t", t);
+        console.log("t2", t2);
         await BloodStock.updateOne({ _id: stock1._id }, {
-            bloodstock: t
+            bloodstock: t,
         });
         await BloodStock.updateOne({ _id: stock2._id }, {
-            bloodstock: t2
+            bloodstock: t2,
         });
 
-        res.status(201).json("tranfert effectué avec succés")
+        res.status(201).json("tranfert effectué avec succés");
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
-})
+});
 app.post("/welcome", auth, (req, res) => {
     res.status(200).send("Welcome 🙌 ");
 });
