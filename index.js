@@ -195,9 +195,7 @@ app.post("/transfertBlood", auth, async(req, res) => {
         console.log(err);
     }
 });
-app.post("/welcome", auth, (req, res) => {
-    res.status(200).send("Welcome 🙌 ");
-});
+
 const { API_PORT } = process.env;
 const port = process.env.PORT || API_PORT;
 
