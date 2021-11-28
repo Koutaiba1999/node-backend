@@ -199,7 +199,14 @@ app.post("/transfertBlood", auth, async(req, res) => {
 const { API_PORT } = process.env;
 const port = process.env.PORT || API_PORT;
 
-// server listening 
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+// server listening
+// app.listen(port, () => {
+//     console.log(`Server running on port ${port}`);
+// });
+app.listen(process.env.PORT || 3000, function() {
+    console.log(
+        "Express server listening on port %d in %s mode",
+        this.address().port,
+        app.settings.env
+    );
 });
