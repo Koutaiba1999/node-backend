@@ -14,11 +14,11 @@ app.use(express.json());
 // Logic goes here
 const User = require("./model/user");
 const BloodStock = require("./model/BloodStock");
-
+//route home pour le server node
 app.get("/", (req, res) => {
     res.status(200).send("Hello server is running").end();
 });
-// Register
+// Register rout pou l api de créeation du compte 
 app.post("/register", async(req, res) => {
     // Our register logic starts here
     try {
@@ -100,6 +100,7 @@ app.post("/login", async(req, res) => {
     }
     // Our register logic ends here
 });
+//middleware auth pour accéder au api du stocks via un access token 
 const auth = require("./middleware/auth");
 app.post("/save", auth, async(req, res) => {
     try {
@@ -117,6 +118,7 @@ app.post("/save", auth, async(req, res) => {
         console.log(err);
     }
 });
+//route pour avoir la liste deu stock 
 app.get("/getstock", auth, async(req, res) => {
     try {
         const stock = await BloodStock.find();
@@ -125,6 +127,7 @@ app.get("/getstock", auth, async(req, res) => {
         console.log(err);
     }
 });
+//route pout créer transfere du snag
 app.post("/transfertBlood", auth, async(req, res) => {
     try {
         var { ville1, ville2, categorie, souscategorie, quantity } = req.body;
